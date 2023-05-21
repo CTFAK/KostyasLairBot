@@ -7,7 +7,7 @@ namespace KostyasLairBot;
 
 internal class Program
 {
-    public static EasyNetLogger Logger { get; private set; } = new(msg => $"[<color=red>{DateTime.Now:HH:mm:ss.fff}</color>] {msg}", true, new string[] { Path.Combine(Directory.GetCurrentDirectory(), "latest.log") });
+    public static EasyNetLogger Logger { get; private set; } = new(msg => $"[<color=red>{DateTime.Now:HH:mm:ss.fff}</color>] {msg}", true, new string[] { "latest.log" });
 
     public static DiscordSocketClient Discord { get; private set; } = new();
 
