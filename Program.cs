@@ -1,8 +1,8 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using EasyNetLog;
+using LibGit2Sharp;
 using Newtonsoft.Json.Linq;
-using Octokit;
 using System.Diagnostics;
 
 namespace KostyasLairBot;
@@ -13,10 +13,7 @@ internal class Program
 
     public static DiscordSocketClient Discord { get; private set; } = new();
 
-    public static GitHubClient GitHub { get; private set; } = new(new ProductHeaderValue("KostyasLairBot"));
-
     private const string configPath = "config.json";
-    private const string commitShaPath = "commit.txt";
 
     private static async Task Main()
     {
@@ -51,7 +48,7 @@ internal class Program
 
     private static async Task OnBotStart()
     {
-        await Discord.SetGameAsync("the latest commit hash: " + await File.ReadAllTextAsync(commitShaPath), type: ActivityType.Watching);
+
     }
 
     private static async Task GitCheckLoopAsync()
@@ -59,26 +56,23 @@ internal class Program
         Directory.SetCurrentDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".."));
         Logger.Log($"Current dir set to {Directory.GetCurrentDirectory()}");
 
-        await Process.Start("git", "checkout production").WaitForExitAsync();
+        var repo = new Repository(Directory.GetCurrentDirectory());
 
         for (; ; )
         {
-            var branch = await GitHub.Git.Reference.Get("CTFAK", "KostyasLairBot", "heads/production");
-            if (!File.Exists(commitShaPath) || await File.ReadAllTextAsync(commitShaPath) != branch.Object.Sha)
+            repo.Network.Fetch("origin", new string[] { "production" });
+
+            if (repo.Refs.First(x => x.CanonicalName == "refs/heads/production").TargetIdentifier != repo.Refs.First(x => x.CanonicalName == "refs/remotes/origin/production").TargetIdentifier)
             {
-                Logger.Log($"New update detected ({branch.Object.Sha}). Restarting...");
+                Logger.Log("New update detected. Pulling and restarting...");
 
-                await File.WriteAllTextAsync(commitShaPath, branch.Object.Sha);
-
-                await Process.Start("git", "fetch").WaitForExitAsync();
                 await Process.Start("git", "pull origin production").WaitForExitAsync();
-
                 Process.Start("dotnet", "run");
 
                 return;
             }
 
-            await Task.Delay(2 * 60000);
+            await Task.Delay(1 * 60000);
         }
     }
 
