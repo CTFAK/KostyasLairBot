@@ -9,9 +9,19 @@ public abstract class DiscordCommand
     public abstract string Name { get; }
     public abstract string Description { get; }
 
+    public virtual GuildPermission? RequiredPermissions { get; }
+
     [NotNull] internal List<SlashCommandOptionBuilder>? Parameters { get; private set; } = new();
 
     public abstract Task OnExecute(SocketSlashCommand interaction);
+
+    internal SlashCommandBuilder GetCommandBuilder() => new()
+    {
+        Name = Name,
+        Description = Description,
+        Options = Parameters,
+        DefaultMemberPermissions = RequiredPermissions
+    };
 }
 
 public abstract class DiscordCommand<T> : DiscordCommand

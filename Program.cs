@@ -21,11 +21,16 @@ internal class Program
     private static DiscordCommand[] commands =
     {
         new PingCommand(),
-        new WhoIsCommand()
+        new WhoIsCommand(),
+        new SendCommand()
     };
 
     private static async Task Main()
     {
+#if LOCAL_TESTING
+        Logger.Log($"<color=magenta>TESTING MODE</color>");
+#endif
+
         Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
         Logger.Log($"Current dir set to {Directory.GetCurrentDirectory()}");
 
@@ -50,7 +55,11 @@ internal class Program
         await Discord.LoginAsync(TokenType.Bot, token);
         await Discord.StartAsync();
 
+#if !LOCAL_TESTING
         await GitCheckLoopAsync();
+#else
+        await Task.Delay(-1);
+#endif
         Logger.Log("<color=red>Exiting...</color>");
     }
 
@@ -64,14 +73,7 @@ internal class Program
         {
             var command = commands[i];
 
-            var builder = new SlashCommandBuilder()
-            {
-                Name = command.Name,
-                Description = command.Description,
-                Options = command.Parameters
-            };
-
-            properties[i] = builder.Build();
+            properties[i] = command.GetCommandBuilder().Build();
         }
 
         await Discord.GetGuild(Guild).BulkOverwriteApplicationCommandAsync(properties);

@@ -8,6 +8,7 @@
 	<OutputPath>build</OutputPath>
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	<Configurations>Release;Local Testing</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

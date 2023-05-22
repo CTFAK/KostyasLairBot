@@ -11,7 +11,7 @@ internal class WhoIsCommand : DiscordCommand<SocketUser>
 
     protected override DiscordCommandParameter<SocketUser> Parameter => new()
     {
-        Name = "User"
+        Name = "user"
     };
 
     public override async Task OnExecute(SocketSlashCommand interaction, DiscordCommandArgument<SocketUser> user)
@@ -19,7 +19,7 @@ internal class WhoIsCommand : DiscordCommand<SocketUser>
         var embed = new EmbedBuilder()
         {
             Title = $"{user.Argument.Username}#{user.Argument.Discriminator}",
-            ImageUrl = user.Argument.GetAvatarUrl()
+            ThumbnailUrl = user.Argument.GetAvatarUrl()
         };
 
         embed.Fields.Add(new()

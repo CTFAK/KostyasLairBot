@@ -11,11 +11,13 @@ public abstract class DiscordCommandParameter
     {
         SlashCommandOptionBuilder.Type = type;
         IsRequired = true;
+        Description = "No description.";
 
         if (type == ApplicationCommandOptionType.Channel)
         {
             if (innerType != typeof(SocketChannel) && innerType != typeof(SocketGuildChannel))
             {
+                SlashCommandOptionBuilder.ChannelTypes = new();
                 if (innerType == typeof(SocketTextChannel))
                 {
                     SlashCommandOptionBuilder.ChannelTypes.Add(ChannelType.Text);
@@ -52,7 +54,7 @@ public abstract class DiscordCommandParameter
     public string Name
     {
         get => SlashCommandOptionBuilder.Name;
-        set => SlashCommandOptionBuilder.Name = value;
+        set => SlashCommandOptionBuilder.Name = value.ToLower();
     }
 
     public string Description
