@@ -39,6 +39,7 @@ internal class Program
         }
 
         Discord.Log += OnDiscordLog;
+        Discord.Ready += OnBotStart;
 
         await Discord.LoginAsync(TokenType.Bot, token);
         await Discord.StartAsync();
@@ -46,6 +47,11 @@ internal class Program
         await GitCheckLoopAsync();
 
         Logger.Log("<color=red>Exiting...</color>");
+    }
+
+    private static async Task OnBotStart()
+    {
+        await Discord.SetGameAsync("Latest commit hash: " + await File.ReadAllTextAsync(commitShaPath), type: ActivityType.CustomStatus);
     }
 
     private static async Task GitCheckLoopAsync()
