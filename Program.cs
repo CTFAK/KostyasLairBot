@@ -22,7 +22,8 @@ internal class Program
     {
         new PingCommand(),
         new WhoIsCommand(),
-        new SendCommand()
+        new SendCommand(),
+        new SetStatusCommand()
     };
 
     private static async Task Main()
