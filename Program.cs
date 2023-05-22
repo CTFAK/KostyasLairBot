@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using EasyNetLog;
+using KostyasLairBot.Commands;
 using LibGit2Sharp;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
@@ -14,6 +15,13 @@ internal class Program
     public static DiscordSocketClient Discord { get; private set; } = new();
 
     private const string configPath = "config.json";
+
+    public const ulong Guild = 1034375602502901791;
+
+    private static DiscordCommand[] commands =
+    {
+        new TestCommand()
+    };
 
     private static async Task Main()
     {
@@ -41,9 +49,41 @@ internal class Program
         await Discord.LoginAsync(TokenType.Bot, token);
         await Discord.StartAsync();
 
-        await GitCheckLoopAsync();
+        await InitializeCommandsAsync();
 
+        await GitCheckLoopAsync();
         Logger.Log("<color=red>Exiting...</color>");
+    }
+
+    private static async Task InitializeCommandsAsync()
+    {
+        var properties = new ApplicationCommandProperties[commands.Length];
+
+        Discord.SlashCommandExecuted += OnCommandExecuted;
+
+        for (var i = 0; i < commands.Length; i++)
+        {
+            var command = commands[i];
+
+            var builder = new SlashCommandBuilder()
+            {
+                Name = command.Name,
+                Description = command.Description
+            };
+
+            properties[i] = builder.Build();
+        }
+
+        await Discord.GetGuild(Guild).BulkOverwriteApplicationCommandAsync(properties);
+    }
+
+    private static async Task OnCommandExecuted(SocketSlashCommand interaction)
+    {
+        var command = commands.FirstOrDefault(x => x.Name == interaction.CommandName);
+        if (command == null)
+            return;
+
+        await command.OnExecute(interaction);
     }
 
     private static async Task OnBotStart()
