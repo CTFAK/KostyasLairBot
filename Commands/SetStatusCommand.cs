@@ -19,5 +19,6 @@ internal class SetStatusCommand : DiscordCommand<string>
     public override async Task OnExecute(SocketSlashCommand interaction, DiscordCommandArgument<string> status)
     {
         await Program.Discord.SetGameAsync(status.Argument);
+        await interaction.RespondAsync("Ight, done", ephemeral: true);
     }
 }
