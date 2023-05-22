@@ -49,8 +49,6 @@ internal class Program
         await Discord.LoginAsync(TokenType.Bot, token);
         await Discord.StartAsync();
 
-        await InitializeCommandsAsync();
-
         await GitCheckLoopAsync();
         Logger.Log("<color=red>Exiting...</color>");
     }
@@ -88,7 +86,7 @@ internal class Program
 
     private static async Task OnBotStart()
     {
-
+        await InitializeCommandsAsync();
     }
 
     private static async Task GitCheckLoopAsync()
