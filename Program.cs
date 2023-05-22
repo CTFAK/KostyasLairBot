@@ -48,7 +48,7 @@ internal class Program
 
     private static async Task OnBotStart()
     {
-
+        await Discord.SetGameAsync("you", type: ActivityType.Watching);
     }
 
     private static async Task GitCheckLoopAsync()
