@@ -57,7 +57,7 @@ internal class Program
 
         for (; ; )
         {
-            var branch = await GitHub.Git.Reference.Get("CTFAK", "KostyasLairBot", "production");
+            var branch = await GitHub.Git.Reference.Get("CTFAK", "KostyasLairBot", "heads/production");
             if (!File.Exists(commitShaPath) || await File.ReadAllTextAsync(commitShaPath) != branch.Object.Sha)
             {
                 Logger.Log($"New update detected ({branch.Object.Sha}). Restarting...");
