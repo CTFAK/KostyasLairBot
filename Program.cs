@@ -20,7 +20,8 @@ internal class Program
 
     private static DiscordCommand[] commands =
     {
-        new TestCommand()
+        new PingCommand(),
+        new WhoIsCommand()
     };
 
     private static async Task Main()
@@ -66,7 +67,8 @@ internal class Program
             var builder = new SlashCommandBuilder()
             {
                 Name = command.Name,
-                Description = command.Description
+                Description = command.Description,
+                Options = command.Parameters
             };
 
             properties[i] = builder.Build();
