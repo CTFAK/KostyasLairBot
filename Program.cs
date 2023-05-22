@@ -51,7 +51,7 @@ internal class Program
 
     private static async Task OnBotStart()
     {
-        await Discord.SetGameAsync("Watching the latest commit hash: " + await File.ReadAllTextAsync(commitShaPath), type: ActivityType.Watching);
+        await Discord.SetGameAsync("the latest commit hash: " + await File.ReadAllTextAsync(commitShaPath), type: ActivityType.Watching);
     }
 
     private static async Task GitCheckLoopAsync()
@@ -78,7 +78,7 @@ internal class Program
                 return;
             }
 
-            await Task.Delay(10000);
+            await Task.Delay(2 * 60000);
         }
     }
 
